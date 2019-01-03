@@ -5,7 +5,7 @@ metadata:
   labels:
     app: frontend
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: frontend
@@ -19,4 +19,4 @@ spec:
         image: gcr.io/dlorenc-vmtest2/skaffold-demo/frontend
         imagePullPolicy: Always
         ports:
-        - containerPort: 8000
+        - containerPort: 5000

@@ -1,0 +1,12 @@
+apiVersion: skaffold/v1beta2
+kind: Config
+build:
+  artifacts:
+  - image: gcr.io/dlorenc-vmtest2/skaffold-demo/backend
+    context: backend
+  - image: gcr.io/dlorenc-vmtest2/skaffold-demo/frontend
+    context: frontend
+deploy:
+  kubectl:
+    manifests:
+      - k8s/*
