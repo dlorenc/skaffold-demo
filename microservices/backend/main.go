@@ -1,7 +1,12 @@
 package main
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
+	"encoding/base64"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -16,6 +21,7 @@ func main() {
 
 		fmt.Printf("Encrypting message: %s\n", msg)
 		result := encrypt(msg)
+		fmt.Printf("Got: %s\n", result)
 		fmt.Fprintln(w, result)
 	})
 
@@ -30,4 +36,26 @@ func encrypt(msg string) string {
 		result = string(msg[i]) + result
 	}
 	return result
+}
+
+var key = []byte("secretthathappenstobe32charslong")
+
+func reallyEncrypt(msg string) string {
+	c, err := aes.NewCipher(key)
+	if err != nil {
+		panic(err)
+	}
+
+	gcm, err := cipher.NewGCM(c)
+	if err != nil {
+		panic(err)
+	}
+
+	nonce := make([]byte, gcm.NonceSize())
+	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
+		panic(err)
+	}
+
+	encrypted := gcm.Seal(nonce, nonce, []byte(msg), nil)
+	return string(base64.StdEncoding.EncodeToString(encrypted))
 }
